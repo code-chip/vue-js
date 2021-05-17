@@ -75,7 +75,19 @@
             },
             methods: {
                 saveContact(contact) {
-                    console.log(contact);
+                    let contacts = localStorage.getItem('contactsApp');
+
+                    if(contacts) {
+
+                        contacts = JSON.parse(contacts);
+                        contacts.push(contact);
+
+                    } else {
+                        contacts = [contact];
+                    }
+
+                    //atualizar local storage independememnte de novo contato ou nova adição.
+                    localStorage.setItem('contactsApp', JSON.stringify(contacts))
                 }
             }
         });
