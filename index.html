@@ -42,7 +42,7 @@
             <div class="col-8 border-left">
                 
                 <div class="contact">
-                        
+                    <div v-if="info"><p>Não há dados</p></div>    
                     <div class="col-12 mb-2" v-for="contact in contacts">
 
                         <div class="card">
@@ -52,7 +52,7 @@
                                 <p class="card-text">{{contact.email}}, {{contact.phone}}</p>
 
                                 <a href="#" class="btn btn-sm btn-primary">EDITAR</a>
-                                <a href="#" class="btn btn-sm btn-danger">DELETAR</a>
+                                <a href="#" class="btn btn-sm btn-danger" @click.prevent="removeContact(contact.id)">DELETAR</a>
                             </div>
 
                         </div>
@@ -69,10 +69,12 @@
                 contacts: [],
                 name: 'Contato App',
                 contact: {
+                    id: '',
                     name: '',
                     email: '',
                     phone: ''
-                }
+                },
+                info: false
             },
             created() {
                 this.contacts = JSON.parse(localStorage.getItem('contactsApp'));
@@ -82,6 +84,8 @@
                 saveContact(contact) {
                     let contacts = localStorage.getItem('contactsApp');
 
+                    contact.id = new Date().getTime();
+
                     if(contacts) {
 
                         contacts = JSON.parse(contacts);
@@ -90,11 +94,26 @@
                     } else {
                         contacts = [contact];
                     }
-
+                    info = true;
                     this.contacts = contacts;
-                    
+
                     //atualizar local storage independememnte de novo contato ou nova adição.
-                    localStorage.setItem('contactsApp', JSON.stringify(contacts))
+                    localStorage.setItem('contactsApp', JSON.stringify(contacts));
+                },
+                removeContact(contactId) {
+                    let contacts = localStorage.getItem('contactsApp');
+
+                    if(!contacts) return;
+
+                    contacts = JSON.parse(contacts);
+
+                    contacts = contacts.filter((contact) => {
+                        return contact.id != contactId;
+                    });
+
+                    localStorage.setItem('contactsApp', JSON.stringify(contacts));
+                    this.contacts = contacts;
+
                 }
             }
         });
